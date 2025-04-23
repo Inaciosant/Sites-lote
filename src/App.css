@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+
+.swiper-button-disabled {
+    opacity: 0.3 !important;
+    pointer-events: none;
+  }
+  
+  .thumbnail-swiper .swiper-slide-thumb-active {
+    opacity: 1 !important;
+    border: 2px solid #ec4899;
+  }
