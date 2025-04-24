@@ -39,7 +39,7 @@ export default function ImageGallery() {
   };
 
   return (
-    <div className="relative bg-gradient-to-br from-gray-50 to-pink-50 ">
+    <div className="relative bg-gradient-to-br from-gray-50 to-pink-50 " id='gallery'>
 
 
 <motion.div

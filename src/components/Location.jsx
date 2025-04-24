@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 
 export default function LocationSection() {
   return (
-    <section className="relative bg-white py-20 px-4 sm:px-6 lg:px-8">
+    <section className="relative bg-white py-20 px-4 sm:px-6 lg:px-8" id='location'>
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <motion.h2

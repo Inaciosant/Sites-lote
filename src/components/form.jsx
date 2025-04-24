@@ -52,7 +52,7 @@ export default function ContactForm() {
   };
 
   return (
-    <section className="bg-gradient-to-br from-[#005A87] to-[#003953] py-20 px-4 sm:px-6 lg:px-8">
+    <section className="bg-gradient-to-br from-[#005A87] to-[#003953] py-20 px-4 sm:px-6 lg:px-8" id='contact'>
       <div className="max-w-2xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

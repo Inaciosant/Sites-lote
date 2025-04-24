@@ -8,9 +8,10 @@ export default function TableOfContents() {
   
   const sections = [
     { id: 'home', title: 'Página Inicial' },
+    { id: 'gallery', title: 'Galeria' },
     { id: 'about', title: 'Sobre o Empreendimento' },
     { id: 'location', title: 'Localização' },
-    { id: 'gallery', title: 'Galeria' },
+    { id: 'status', title: 'Status da obra' },
     { id: 'contact', title: 'Contato' }
   ]
 

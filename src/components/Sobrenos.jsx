@@ -8,7 +8,7 @@ import logo from '../assets/logo.png'
 
 export default function AboutSection() {
   return (
-    <section className="relative bg-gradient-to-b from-gray-50 to-white py-24 overflow-hidden">
+    <section className="relative bg-gradient-to-b from-gray-50 to-white py-24 overflow-hidden" id='about'>
       <div className="max-w-7xl mx-auto px-4 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Seção Esquerda - Visual */}
