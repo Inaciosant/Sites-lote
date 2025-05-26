@@ -4,51 +4,78 @@ import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import { FiUser, FiMail, FiPhone, FiSend, FiLoader } from 'react-icons/fi';
 import { useState } from 'react';
+import axios from 'axios';
+import { useAlert } from '../contexts/AlertContext';
 
 export default function ContactForm() {
+  const { showAlert } = useAlert();
   const { 
     register, 
     handleSubmit, 
+    reset,
     formState: { errors, isSubmitting }, 
-    reset 
+    setValue,
+    watch,
+    trigger
   } = useForm();
 
-  const [phone, setPhone] = useState('');
-
-  // Função para formatar o telefone
+  // Função de formatação do telefone
   const formatPhone = (value) => {
     const numbers = value.replace(/\D/g, '');
-    let formatted = '';
+    let formatted = numbers;
     
     if (numbers.length > 0) {
-      formatted += '(' + numbers.substring(0, 2);
+      formatted = `(${numbers.substring(0,2)}`;
     }
     if (numbers.length > 2) {
-      formatted += ') ' + numbers.substring(2, 7);
+      formatted += `) ${numbers.substring(2,7)}`;
     }
     if (numbers.length > 7) {
-      formatted += '-' + numbers.substring(7, 11);
+      formatted += `-${numbers.substring(7,11)}`;
     }
     
     return formatted;
   };
 
-  const handlePhoneChange = (e) => {
-    const formatted = formatPhone(e.target.value);
-    setPhone(formatted);
+  const handlePhoneInput = (e) => {
+    const rawValue = e.target.value.replace(/\D/g, '');
+    const formatted = formatPhone(rawValue);
+    setValue('phone', formatted);
+    trigger('phone');
   };
 
   const onSubmit = async (data) => {
-    const fullData = {
-      ...data,
-      phone: phone.replace(/\D/g, '') // Remove a máscara para salvar
-    };
-    
-    // Simular envio
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    console.log(fullData);
-    reset();
-    setPhone('');
+    try {
+      const payload = {
+        primeironome: data.name,
+        email: data.email,
+        celular: data.phone.replace(/\D/g, ''),
+        obs: 'Contato via formulário de informações',
+        interesse: '1',
+        crm_categoria: '2',
+        crm_origem: 'site'
+      };
+
+      await axios.post(
+        'https://arlempreendimentos.ibsystem.com.br/recebe_dados_site.php',
+        new URLSearchParams(payload).toString(),
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          }
+        }
+      );
+
+      showAlert();
+      reset({ // Reset com valores iniciais
+        name: '',
+        email: '',
+        phone: ''
+      });
+    } catch (error) {
+      console.error('Erro no envio:', error);
+      alert('Ocorreu um erro ao enviar. Tente novamente.');
+    }
   };
 
   return (
@@ -73,7 +100,13 @@ export default function ContactForm() {
               </label>
               <input
                 id="name"
-                {...register('name', { required: 'Campo obrigatório' })}
+                {...register('name', { 
+                  required: 'Campo obrigatório',
+                  minLength: {
+                    value: 3,
+                    message: 'Mínimo 3 caracteres'
+                  }
+                })}
                 className={`w-full px-4 py-3 rounded-lg border ${
                   errors.name ? 'border-red-500' : 'border-gray-300'
                 } focus:border-[#005A87] focus:ring-2 focus:ring-[#005A87]/50`}
@@ -96,7 +129,7 @@ export default function ContactForm() {
                 {...register('email', { 
                   required: 'Campo obrigatório',
                   pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                     message: 'E-mail inválido'
                   }
                 })}
@@ -110,7 +143,7 @@ export default function ContactForm() {
               )}
             </div>
 
-            {/* Campo Telefone com Máscara Manual */}
+            {/* Campo Telefone */}
             <div>
               <label htmlFor="phone" className="block text-gray-700 mb-2 font-medium">
                 <FiPhone className="inline mr-2 text-[#005A87]" />
@@ -119,12 +152,6 @@ export default function ContactForm() {
               <input
                 id="phone"
                 type="tel"
-                value={phone}
-                onChange={handlePhoneChange}
-                className={`w-full px-4 py-3 rounded-lg border ${
-                  errors.phone ? 'border-red-500' : 'border-gray-300'
-                } focus:border-[#005A87] focus:ring-2 focus:ring-[#005A87]/50`}
-                placeholder="(99) 99999-9999"
                 {...register('phone', {
                   required: 'Campo obrigatório',
                   validate: (value) => {
@@ -132,6 +159,12 @@ export default function ContactForm() {
                     return numbers.length === 11 || 'Número inválido (DDD + 9 dígitos)';
                   }
                 })}
+                className={`w-full px-4 py-3 rounded-lg border ${
+                  errors.phone ? 'border-red-500' : 'border-gray-300'
+                } focus:border-[#005A87] focus:ring-2 focus:ring-[#005A87]/50`}
+                placeholder="(99) 99999-9999"
+                onInput={handlePhoneInput}
+                value={watch('phone') || ''}
               />
               {errors.phone && (
                 <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>

@@ -3,11 +3,12 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App' // (1)
 import './index.css'
+import Rotas from './Route'
 
-createRoot(document.getElementById('root')).render( // (2)
+createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <Rotas />
     </BrowserRouter>
   </StrictMode>
 )
